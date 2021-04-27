@@ -11,11 +11,13 @@ bp = Blueprint('account', __name__)
 @bp.route('/')
 def index():
     db = get_db()
-    accounts = db.execute(
-        'SELECT b.id, userAccount_id, username, amount'
-        ' FROM bankAccount b JOIN userAccount u ON b.userAccount_id = u.id'
-        ' WHERE userAccount_id = ?',(g.user['id'],)
-    ).fetchall()
+    accounts = iter(())
+    if g.user is not None:
+        accounts = db.execute(
+            'SELECT b.id, userAccount_id, username, amount'
+            ' FROM bankAccount b JOIN userAccount u ON b.userAccount_id = u.id'
+            ' WHERE userAccount_id = ?',(g.user['id'],)
+        ).fetchall()
     return render_template('account/index.html', accounts=accounts)
 
 
