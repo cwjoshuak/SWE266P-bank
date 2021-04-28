@@ -53,6 +53,7 @@ def login():
         password = request.form['password']
         db = get_db()
         error = None
+        '''
         user = db.execute(
             'SELECT * FROM userAccount WHERE username = ?', (username,)
         ).fetchone()
@@ -61,7 +62,11 @@ def login():
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password):
             error = 'Incorrect password.'
-
+        '''
+        user = db.execute(
+            'SELECT * FROM userAccount WHERE username = "' + username +
+            '" AND password = "' + generate_password_hash(password) +'"'
+        ).fetchone()
         if error is None:
             session.clear()
             session['user_id'] = user['id']
