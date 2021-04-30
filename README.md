@@ -32,12 +32,14 @@ $ venv\Scripts\activate
 # install dependencies
 $ pip install -r "requirements.txt"
 
-$ export FLASK_APP=bank.py  # on Windows use set instead of export
+$ export FLASK_APP=flaskr  # on Windows use set instead of export
 $ flask run
 ```
 
 If developing, enable development mode:
 `$ export FLASK_ENV=development`
+If setting up database for the first time:
+`$ flask init-db`
 
 ### Adding new dependencies
 
