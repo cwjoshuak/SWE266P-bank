@@ -67,6 +67,8 @@ def login():
             'SELECT * FROM userAccount WHERE username = "' + username +
             '" AND password = "' + generate_password_hash(password) +'"'
         ).fetchone()
+        if user is None:
+            error = 'Incorrect username.'
         if error is None:
             session.clear()
             session['user_id'] = user['id']
