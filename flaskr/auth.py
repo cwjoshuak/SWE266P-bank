@@ -52,21 +52,22 @@ def login():
         username = request.form['username']
         password = request.form['password']
         db = get_db()
+
         error = None
-        '''
-        user = db.execute(
-            'SELECT * FROM userAccount WHERE username = ?', (username,)
-        ).fetchone()
+
+        passwordHash = db.execute('SELECT password from userAccount WHERE username="' + username +'"').fetchone()
+
+        statement = 'SELECT * FROM userAccount WHERE username = "' + username + '" AND ' + \
+                    ('1' if check_password_hash(passwordHash['password'], password) else '0')
+
+        user = db.execute(statement).fetchone()
 
         if user is None:
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password):
             error = 'Incorrect password.'
-        '''
-        user = db.execute(
-            'SELECT * FROM userAccount WHERE username = "' + username +
-            '" AND password = "' + generate_password_hash(password) +'"'
-        ).fetchone()
+
+        user = db.execute(statement).fetchone()
         if user is None:
             error = 'Incorrect username.'
         if error is None:
