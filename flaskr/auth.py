@@ -7,6 +7,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
 
+import re
+
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=('GET', 'POST'))
@@ -32,6 +34,19 @@ def register():
             'SELECT id FROM userAccount WHERE username = ?', (username,)
         ).fetchone() is not None:
             error = 'User {} is already registered.'.format(username)
+
+        if len(username) > 127:
+            error = "Username too long"
+        elif len(password) > 127:
+            error = "Password too long"
+            
+        pat = re.compile("[_\\-\\.0-9a-z]+")
+        usernameRegex = pat.fullmatch(username)
+        if usernameRegex is None:
+            error = "Username contains illegal characters"
+        passwordRegex = pat.fullmatch(password)
+        if passwordRegex is None:
+            error = "Password contains illegal characters"
 
         if error is None:
             db.execute(
