@@ -54,21 +54,15 @@ def login():
         db = get_db()
 
         error = None
-
+        user = None
         passwordHash = db.execute('SELECT password from userAccount WHERE username="' + username +'"').fetchone()
-
-        statement = 'SELECT * FROM userAccount WHERE username = "' + username + '" AND ' + \
+        if passwordHash is not None:
+            statement = 'SELECT * FROM userAccount WHERE username = "' + username + '" AND ' + \
                     ('1' if check_password_hash(passwordHash['password'], password) else '0')
 
-        user = db.execute(statement).fetchone()
+            user = db.execute(statement).fetchone()
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
-
-        user = db.execute(statement).fetchone()
-        if user is None:
+        if user is None or passwordHash is None:
             error = 'Incorrect username.'
         if error is None:
             session.clear()
