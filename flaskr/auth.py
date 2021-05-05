@@ -10,13 +10,20 @@ from flaskr.db import get_db
 import re
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
-
-@bp.route('/register', methods=('GET', 'POST'))
-def register():
+@bp.route('/register-1', methods=(['GET', 'POST']))
+def register1():
     if request.method == 'POST':
         username = request.form['username']
+        return redirect(url_for('auth.register2', username=username))
+    return render_template('auth/register1.html')
+
+@bp.route('/register-2', methods=(['GET', 'POST']))
+def register2():
+    username = request.args.get('username', '')
+    if request.method == 'POST':
+
         password = request.form['password']
-        firstname  = request.form['firstname']
+        firstname = request.form['firstname']
         lastname = request.form['lastname']
         phonenumber = request.form['phonenumber']
         db = get_db()
@@ -31,7 +38,7 @@ def register():
         elif not lastname:
             error = 'Last name required.'
         elif db.execute(
-            'SELECT id FROM userAccount WHERE username = ?', (username,)
+                'SELECT id FROM userAccount WHERE username = ?', (username,)
         ).fetchone() is not None:
             error = 'User {} is already registered.'.format(username)
 
@@ -39,7 +46,7 @@ def register():
             error = "Username too long"
         elif len(password) > 127:
             error = "Password too long"
-            
+
         pat = re.compile("[_\\-\\.0-9a-z]+")
         usernameRegex = pat.fullmatch(username)
         if usernameRegex is None:
@@ -58,8 +65,9 @@ def register():
             return redirect(url_for('auth.login'))
 
         flash(error)
-
-    return render_template('auth/register.html')
+        return render_template('auth/login.html')
+    session['username'] = username
+    return render_template('auth/register.html', username=username)
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -87,9 +95,18 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             return redirect(url_for('index'))
-
         flash(error)
+    if request.method == 'GET':
+        username = session.get('username', None)
 
+        if username:
+            query = 'SELECT id from userAccount WHERE username="' + username + '"'
+            db = get_db()
+            user_id = db.execute(query).fetchone()
+
+            if(user_id['id']):
+                session['user_id'] = user_id['id']
+                return redirect(url_for('index'))
     return render_template('auth/login.html')
 
 @bp.before_app_request
