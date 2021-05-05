@@ -13,6 +13,6 @@ CREATE TABLE userAccount (
 CREATE TABLE bankAccount (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   userAccount_id INTEGER NOT NULL,
-  amount INTEGER NOT NULL,
+  amount DECIMAL(16,2) NOT NULL,
   FOREIGN KEY (userAccount_id) REFERENCES userAccount (id)
 );
