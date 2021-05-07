@@ -8,6 +8,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
 
 import re
+import sys
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/register-1', methods=(['GET', 'POST']))
@@ -37,6 +38,8 @@ def register2():
             error = 'First name required.'
         elif not lastname:
             error = 'Last name required.'
+        elif phonenumber.isnumeric() == False:
+            error = 'Phone number not numeric'
         elif db.execute(
                 'SELECT id FROM userAccount WHERE username = ?', (username,)
         ).fetchone() is not None:
@@ -75,7 +78,6 @@ def login():
         target = request.args.get('target')
         if target is not None:
             return redirect(target)
-            
         username = request.form['username']
         password = request.form['password']
         db = get_db()

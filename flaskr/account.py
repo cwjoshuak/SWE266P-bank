@@ -15,7 +15,6 @@ bp = Blueprint('account', __name__)
 def index():
     db = get_db()
     passtoHTMLaccounts = []
-    print(g.user)
     if g.user is not None:
         accounts = db.execute(
             'SELECT b.id, userAccount_id, username, amount'
@@ -99,7 +98,6 @@ def update(id):
         if error is not None:
             flash(error)
         else:
-            print(account['amount'], file=sys.stderr) 
             db = get_db()
             db.execute(
                 'UPDATE bankAccount SET amount = ?'
