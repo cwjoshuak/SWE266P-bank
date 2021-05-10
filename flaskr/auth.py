@@ -27,6 +27,7 @@ def register2():
         firstname = request.form['firstname']
         lastname = request.form['lastname']
         phonenumber = request.form['phonenumber']
+        initamount = request.form['initamount']
         db = get_db()
         error = None
 
@@ -40,6 +41,10 @@ def register2():
             error = 'Last name required.'
         elif phonenumber.isnumeric() == False:
             error = 'Phone number not numeric'
+        elif not initamount:
+            error = 'Initial amount required.'
+        elif verify_number(initamount) == False:
+            error = 'Not a valid numeric input'
         elif db.execute(
                 'SELECT id FROM userAccount WHERE username = ?', (username,)
         ).fetchone() is not None:
@@ -63,6 +68,16 @@ def register2():
                 'INSERT INTO userAccount (username, password, phoneNumber, firstName, lastName)'
                 ' VALUES (?, ?, ?, ?, ?)',
                 (username, generate_password_hash(password), phonenumber, firstname, lastname)
+            )
+            db.commit()
+            userAccountInfo = db.execute(
+                'SELECT id FROM userAccount WHERE username = ?', (username,)
+            ).fetchone()
+            userAccountId = userAccountInfo['id']
+            db.execute(
+                'INSERT INTO bankAccount (amount, userAccount_id)'
+                ' VALUES (?, ?)',
+                (initamount, userAccountId)
             )
             db.commit()
             return redirect(url_for('auth.login'))
@@ -136,3 +151,10 @@ def logout():
 #
 #     return wrapped_view
 
+def verify_number(amount):
+    pattern = re.compile('(0|[1-9][0-9]*)(\\.[0-9]{2})?')
+    match = pattern.fullmatch(amount)
+    if match is None:
+        return False
+    else:
+        return True
