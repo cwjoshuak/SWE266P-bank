@@ -3,7 +3,7 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
-from flaskr.auth import login_required
+# from flaskr.auth import login_required
 from flaskr.db import get_db
 
 import re
@@ -32,7 +32,7 @@ def index():
 
 
 @bp.route('/create', methods=('GET', 'POST'))
-@login_required
+# @login_required
 def create():
     if request.method == 'POST':
         init_amount = request.form['amount']
@@ -64,16 +64,16 @@ def get_account(id, check_author=True):
         (id,)
     ).fetchone()
 
-    if account is None:
-        abort(404, "Account id {0} doesn't exist.".format(id))
-
-    if check_author and account['userAccount_id'] != g.user['id']:
-        abort(403)
+    # if account is None:
+    #     abort(404, "Account id {0} doesn't exist.".format(id))
+    #
+    # if check_author and account['userAccount_id'] != g.user['id']:
+    #     abort(403)
 
     return account
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
-@login_required
+# @login_required
 def update(id):
     account = get_account(id)
 
@@ -110,7 +110,7 @@ def update(id):
     return render_template('account/update.html', account=account)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
-@login_required
+# @login_required
 def delete(id):
     get_account(id)
     db = get_db()
