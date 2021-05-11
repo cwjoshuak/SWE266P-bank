@@ -46,7 +46,7 @@ $ flask run
 
 ### Adding new dependencies
 
-After installing new dependencies, run `pip freeze >"requirements.txt`, add/commit.
+After installing new dependencies, run `pip freeze >"requirements.txt"`, add/commit.
 
 ## Oracle
 
