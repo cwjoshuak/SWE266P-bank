@@ -33,16 +33,17 @@ $ venv\Scripts\activate
 # install dependencies
 $ pip install -r "requirements.txt"
 
-# If developing, enable development mode:
+$ export FLASK_APP=jankbank  # on Windows use set instead of export
+
+# If developing, enable development mode for hot reload:
 $ export FLASK_ENV=development
 
-# If setting up database for the first time:
+# If setting up database for the first time, initialize the sqlite database:
 $ flask init-db
 
-$ export FLASK_APP=jankbank  # on Windows use set instead of export
 $ flask run
 ```
-
+Server should run at http://localhost:5000.
 
 ### Adding new dependencies
 
