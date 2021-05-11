@@ -3,8 +3,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,windows,macos,flask,pycharm+all,python
 
 ### Flask ###
-flaskr/instance/*
-!flaskr/instance/.gitignore
+jankbank/instance/*
+!jankbank/instance/.gitignore
 .webassets-cache
 .env
 
@@ -72,7 +72,7 @@ db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
-flaskr/instance
+jankbank/instance
 # just in case
 instance
 
