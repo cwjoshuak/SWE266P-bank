@@ -98,16 +98,12 @@ def login():
         db = get_db()
 
         error = None
-        user = None
-        passwordHash = db.execute('SELECT password from userAccount WHERE username="' + username +'"').fetchone()
-        if passwordHash is not None:
-            statement = 'SELECT * FROM userAccount WHERE username = "' + username + '" AND ' + \
-                    ('1' if check_password_hash(passwordHash['password'], password) else '0')
+        user = db.execute("SELECT * from userAccount WHERE username= ?", (username,)).fetchone()
 
-            user = db.execute(statement).fetchone()
-
-        if user is None or passwordHash is None:
+        if user is None:
             error = 'Incorrect username.'
+        elif not check_password_hash(user["password"], password):
+            error = "Incorrect password."
         if error is None:
             session.clear()
             session['user_id'] = user['id']
@@ -141,15 +137,13 @@ def logout():
     session.clear()
     return redirect(url_for('index'))
 
-# def login_required(view):
-#     @functools.wraps(view)
-#     def wrapped_view(**kwargs):
-#         if g.user is None:
-#             return redirect(url_for('auth.login'))
-#
-#         return view(**kwargs)
-#
-#     return wrapped_view
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+        return view(**kwargs)
+    return wrapped_view
 
 def verify_number(amount):
     pattern = re.compile('(0|[1-9][0-9]*)(\\.[0-9]{2})?')
