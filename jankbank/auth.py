@@ -5,22 +5,22 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from flaskr.db import get_db
+from jankbank.db import get_db
 
 import re
-import sys
 
 bp = Blueprint('auth', __name__)
 @bp.route('/register-1', methods=(['GET', 'POST']))
 def register1():
     if request.method == 'POST':
         username = request.form['username']
-        return redirect(url_for('auth.register2', username=username))
+        return redirect(url_for('auth.register2', username_register=username))
     return render_template('auth/register1.html')
 
 @bp.route('/register-2', methods=(['GET', 'POST']))
 def register2():
-    username = request.args.get('username', '')
+    session.clear()
+    username = request.args.get('username_register', '')
     if request.method == 'POST':
 
         password = request.form['password']
@@ -84,7 +84,7 @@ def register2():
 
         flash(error)
         return render_template('auth/login.html')
-    session['username'] = username
+    session['username_register'] = username
     return render_template('auth/register.html', username=username)
 
 @bp.route('/login', methods=('GET', 'POST'))
