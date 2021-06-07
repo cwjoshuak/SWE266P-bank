@@ -3,8 +3,8 @@ from flask import (
 )
 from werkzeug.exceptions import abort
 
-# from jankbank.auth import login_required
-from jankbank.db import get_db
+from flaskr.auth import login_required
+from flaskr.db import get_db
 
 import re
 import sys
@@ -32,7 +32,7 @@ def index():
 
 
 @bp.route('/create', methods=('GET', 'POST'))
-# @login_required
+@login_required
 def create():
     if request.method == 'POST':
         init_amount = request.form['amount']
@@ -73,7 +73,7 @@ def get_account(id, check_author=True):
     return account
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
-# @login_required
+@login_required
 def update(id):
     account = get_account(id)
 
@@ -110,7 +110,7 @@ def update(id):
     return render_template('account/update.html', account=account)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
-# @login_required
+@login_required
 def delete(id):
     get_account(id)
     db = get_db()

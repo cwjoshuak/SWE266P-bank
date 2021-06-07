@@ -90,9 +90,6 @@ def register2():
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        target = request.args.get('target')
-        if target is not None:
-            return redirect(target)
         username = request.form['username']
         password = request.form['password']
         db = get_db()
